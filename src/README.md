@@ -4,6 +4,8 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
+> **_NOTE:_**  This is the original README of Efficient-CapsNet. I left it in as form of credit, but have not changed it apart from this note. Parts of it might no longer be relevant.
+
 
 <h1 align="center"> ~ Efficient-CapsNet ~ </h1>
 Are you tired of over inflated and overused convolutional neural networks? You're right! It's time for <strong>CAPSULES</strong> :)<br>
