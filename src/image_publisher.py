@@ -35,8 +35,8 @@ def publish_images(images, labels, rate):
 
 if __name__ == '__main__':
     try:
-        mnist_image_file = '/home/swaltmann/mirte_ws/src/mirte-ros-packages/mirte_efficient_caps/data/t10k-images-idx3-ubyte/t10k-images-idx3-ubyte'
-        mnist_label_file = '/home/swaltmann/mirte_ws/src/mirte-ros-packages/mirte_efficient_caps/data/t10k-labels-idx1-ubyte/t10k-labels-idx1-ubyte'
+        mnist_image_file = '/home/swaltmann/mirte_ws/src/mirte-ros-packages/mirte_efficient_capsnet/src/data/t10k-images-idx3-ubyte/t10k-images-idx3-ubyte'
+        mnist_label_file = '/home/swaltmann/mirte_ws/src/mirte-ros-packages/mirte_efficient_capsnet/src/data/t10k-labels-idx1-ubyte/t10k-labels-idx1-ubyte'
         publish_rate = 0.5  # Adjust as needed (images per second)
         images = read_mnist_images(mnist_image_file)
         labels = read_mnist_labels(mnist_label_file)
