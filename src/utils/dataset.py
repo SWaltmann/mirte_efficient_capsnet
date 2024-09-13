@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import os
 from utils import pre_process_mnist, pre_process_multimnist, pre_process_smallnorb
 import json
-
+from pathlib import Path
 
 class Dataset(object):
     """
@@ -46,7 +46,7 @@ class Dataset(object):
     """
     def __init__(self, model_name, config_path='config.json'):
         self.model_name = model_name
-        self.config_path = config_path
+        self.set_config_path(config_path)  # self.config_path
         self.config = None
         self.X_train = None
         self.y_train = None
@@ -57,7 +57,25 @@ class Dataset(object):
         self.load_config()
         self.get_dataset()
         
+    def set_config_path(self, config_path):
+            """
+            If config path is relative, make it absolute. Assumes it is in the src/ dir
 
+            Especially when running as a ROS node, the working directory can differ. This 
+            prevents FileNotFound errors. Method copied from models/model.p
+            """
+            if Path(config_path).is_absolute():
+                absolute_config_path = config_path
+            else:
+                this_file_path = Path(__file__).resolve()  # Path to this (model.py) file
+                src_dir_path = this_file_path.parent.parent  # Move up twice in path to src/
+                absolute_config_path = os.path.join(src_dir_path, config_path)
+
+            if Path(absolute_config_path).is_file():
+                self.config_path = absolute_config_path
+            else:
+                raise Exception(f"There is no config file. Either create one or check the file path. Current \
+                                config path is {absolute_config_path}")
     def load_config(self):
         """
         Load config file

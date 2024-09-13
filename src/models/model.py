@@ -23,6 +23,7 @@ from models import efficient_capsnet_graph_mnist, efficient_capsnet_graph_smalln
 import os
 import json
 from tqdm.notebook import tqdm
+from pathlib import Path
 
 
 class Model(object):
@@ -58,11 +59,31 @@ class Model(object):
         self.model_name = model_name
         self.model = None
         self.mode = mode
-        self.config_path = config_path
+        self.config_path = None
+        self.set_config_path(config_path)
         self.config = None
         self.verbose = verbose
         self.load_config()
 
+    def set_config_path(self, config_path):
+        """
+        If config path is relative, make it absolute. Assuming it is in the src/ dir
+
+        Especially when running as a ROS node, the working directory can differ. This 
+        prevents FileNotFound errors. 
+        """
+        if Path(config_path).is_absolute():
+            absolute_config_path = config_path
+        else:
+            this_file_path = Path(__file__).resolve()  # Path to this (model.py) file
+            src_dir_path = this_file_path.parent.parent  # Move up twice in path to src/
+            absolute_config_path = os.path.join(src_dir_path, config_path)
+
+        if Path(absolute_config_path).is_file():
+            self.config_path = absolute_config_path
+        else:
+            raise Exception(f"There is no config file. Either create one or check the file path. Current \
+                            config path is {absolute_config_path}")
 
     def load_config(self):
         """
@@ -77,6 +98,7 @@ class Model(object):
             self.model.load_weights(self.model_path)
         except Exception as e:
             print("[ERRROR] Graph Weights not found")
+            print(self.model_path)
             
         
     def predict(self, dataset_test):
