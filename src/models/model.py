@@ -161,9 +161,17 @@ class EfficientCapsNet(Model):
     def __init__(self, model_name, mode='test', config_path='config.json', custom_path=None, verbose=True):
         Model.__init__(self, model_name, mode, config_path, verbose)
         if custom_path != None:
-            self.model_path = custom_path
+            if Path(custom_path).is_absolute():
+                self.model_path = custom_path
+            else:
+                raise Exception("Please provide an absolute path for the model_path")
         else:
-            self.model_path = os.path.join(self.config['saved_model_dir'], f"efficient_capsnet_{self.model_name}.h5")
+            saved_model_dir = Path(self.config['saved_model_dir'])
+            if not saved_model_dir.is_absolute():
+                this_file_path = Path(__file__).resolve()
+                src_dir_path = this_file_path.parent.parent
+                saved_model_dir = os.path.join(src_dir_path, saved_model_dir)  # append src dir to model_dir to make absolute
+            self.model_path = os.path.join(saved_model_dir, f"efficient_capsnet_{self.model_name}.h5")
         self.model_path_new_train = os.path.join(self.config['saved_model_dir'], f"efficient_capsnet{self.model_name}_new_train.h5")
         self.tb_path = os.path.join(self.config['tb_log_save_dir'], f"efficient_capsnet_{self.model_name}")
         self.load_graph()
