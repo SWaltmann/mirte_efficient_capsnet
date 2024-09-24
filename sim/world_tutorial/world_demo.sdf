@@ -106,5 +106,30 @@
                 model://Coke
             </uri>
         </include>
+        <model name="terrain">
+            <static>true</static> <!-- Makes the terrain static (non-moving) -->
+            <link name="terrain_link">
+              <collision name="collision">
+                <geometry>
+                  <heightmap>
+                    <uri>file://heightmap.png</uri> <!-- Path to your grayscale image -->
+                    <size>100 100 10</size> <!-- Size of the heightmap in meters (width, depth, height) -->
+                    <pos>0 0 0</pos> <!-- Position of the heightmap -->
+                  </heightmap>
+                </geometry>
+              </collision>
+              <visual name="visual">
+                <geometry>
+                  <heightmap>
+                    <uri>file://heightmap.png</uri> <!-- Same heightmap path for visualization -->
+                    <size>100 100 10</size> <!-- Same size -->
+                    <!-- <texture>
+                      <diffuse>file://PATH_TO_TEXTURE_IMAGE.png</diffuse> 
+                    </texture> -->
+                  </heightmap>
+                </geometry>
+              </visual>
+            </link>
+          </model>
     </world>
 </sdf>    
