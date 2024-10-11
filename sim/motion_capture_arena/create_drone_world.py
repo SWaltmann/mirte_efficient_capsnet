@@ -63,8 +63,6 @@ def calculate_pose_and_size_3d(p1, p2, p3, p4):
     pose = (center[0], center[1], center[2], roll, pitch, yaw)
     size = (width, length)
 
-
-
     return pose, size    
 
 
@@ -119,6 +117,85 @@ def create_rectangle(pose, size, thickness, suffix):
     visual_ambient.text = '0.0 0.0 0.0 1.0'  # Black color with full opacity
     visual_diffuse = ET.SubElement(visual_material, 'diffuse')
     visual_diffuse.text = '0.0 0.0 0.0 1.0'  # Black color with full opacity
+
+def create_box_sdf(suffix, pose, size):
+    """
+    Create SDF for a dynamic box in a Gazebo simulation.
+
+    Args:
+        suffix (str): The name of the box (box_suffix).
+        pose (tuple): The pose of the box in the format (x, y, z, roll, pitch, yaw).
+        size (tuple): The size of the box in the format (width, height, depth).
+
+    Returns:
+        str: The SDF string representation of the box.
+    """
+    # Create the root element for the box
+    box = ET.SubElement(world, 'model', name=f"box_{suffix}")
+
+    box_pose = ET.SubElement(box, 'pose')
+    box_pose.text = f'{pose[0]} {pose[1]} {pose[2]} {pose[3]} {pose[4]} {pose[5]}'
+
+    # Set the static attribute to false to make it dynamic
+    ET.SubElement(box, 'static').text = 'false'
+    
+    # Create the link for the box
+    link = ET.SubElement(box, 'link', name='link')
+
+    # Create the visual element for the box
+    visual = ET.SubElement(link, 'visual', name='visual')
+    geometry = ET.SubElement(visual, 'geometry')
+
+    # Create the material element for the texture
+    material = ET.SubElement(visual, 'material')
+
+    ambient = ET.SubElement(material, 'ambient')
+    ambient.text = "0.8 0.8 0.8 1"
+
+    diffuse = ET.SubElement(material, 'diffuse')
+    diffuse.text = "0.8 0.8 0.8 1"
+
+    specular = ET.SubElement(material, 'specular')
+    specular.text = "1 0.8 0.8 1"
+    
+    pbr = ET.SubElement(material, 'pbr')
+
+    metal = ET.SubElement(pbr, 'metal')
+
+    albedo_map = ET.SubElement(metal, 'albedo_map')
+    albedo_map.text = "box.png"
+
+    normal_map = ET.SubElement(metal, 'normal_map')
+    normal_map.text = "box.png"
+
+
+    # Create the box geometry
+    box_geom = ET.SubElement(geometry, 'box')
+    size_elem = ET.SubElement(box_geom, 'size')
+    size_elem.text = f"{size[0]} {size[1]} {size[2]}"  # width height depth
+    
+    # Create the collision element for the box
+    collision = ET.SubElement(link, 'collision', name='collision')
+    collision_geometry = ET.SubElement(collision, 'geometry')
+    
+    # Create the box geometry for collision
+    collision_box = ET.SubElement(collision_geometry, 'box')
+    collision_size_elem = ET.SubElement(collision_box, 'size')
+    collision_size_elem.text = f"{size[0]} {size[1]} {size[2]}"  # width height depth
+
+    # Create the inertia element for the box
+    inertia = ET.SubElement(link, 'inertia')
+    inertia_elem = ET.SubElement(inertia, 'ixx')
+    inertia_elem.text = str((1/12) * size[1] * size[2]**2)  # Ixx
+    inertia_elem = ET.SubElement(inertia, 'iyy')
+    inertia_elem.text = str((1/12) * size[0] * size[2]**2)  # Iyy
+    inertia_elem = ET.SubElement(inertia, 'izz')
+    inertia_elem.text = str((1/12) * size[0] * size[1]**2)  # Izz
+
+    # Create the mass element for the box
+    mass_elem = ET.SubElement(link, 'mass')
+    mass_elem.text = str(size[0] * size[1] * size[2])  # Assuming density = 1 for simplicity
+
 
 # Create the root element for the SDF
 sdf = ET.Element('sdf', version='1.7')
@@ -267,30 +344,28 @@ ET.SubElement(light, 'direction').text = '-0.5 0.1 -0.9'
 #################################
 
 # Size of the motion capture arena:
-length = 16  # meter
-height = 8  # meter
-width = 8  # meter
-
+arena_length = 16  # meter
+arena_height = 8  # meter
+arena_width = 8  # meter
 
 arena_corners = np.zeros((8,3))
-
 for i, corner in enumerate(arena_corners):
     # Simple way to get the coordinates of a rectangle of specified size
     # It cannot be rotated (by why would it)
     if i % 2 != 0:
-        corner[0] = width / 2
+        corner[0] = arena_width / 2
     else:
-        corner[0] = -width / 2
+        corner[0] = -arena_width / 2
 
     if i in [1, 2, 5, 6]:
-        corner[1] = length / 2
+        corner[1] = arena_length / 2
     else:
-        corner[1] = -length / 2
+        corner[1] = -arena_length / 2
     
     if i < 4 :
         corner[2] = 0
     else:
-        corner[2] = height
+        corner[2] = arena_height
 
 # From this list, grab the 6 sides. Since it is constructed in a 
 # specific way, we can assume which point goes where
@@ -313,54 +388,24 @@ for i, side in enumerate(arena_sides):
 
     create_rectangle(pose, size, 0.01, suffix)
 
-# # Create the model for the floor
+# Now we add some random boxes in the arena:
+n_boxes = 4
+for i in range(n_boxes):
 
-# floor = ET.SubElement(world, 'model', name='floor')
+    x_size = np.random.uniform(0.5, 2)
+    y_size = np.random.uniform(0.5, 2)
+    z_size = np.random.uniform(0.5, 2)
+    size = x_size, x_size, x_size  # Make the box cubes
 
-# ET.SubElement(floor, 'static').text = 'true'
+    x = np.random.uniform(-(arena_width-x_size) / 2, (arena_width-x_size) / 2) 
+    y = np.random.uniform(-(arena_length-x_size) / 2, (arena_length-x_size) / 2)
+    z = 2
+    roll = 0
+    pitch = 0
+    yaw = np.random.uniform(0, np.pi)
+    pose = x, y, z, roll, pitch, yaw
 
-# pose = ET.SubElement(floor, 'pose')
-# pose.text = '0 0 0 0 0 0' 
-
-# link = ET.SubElement(floor, 'link', name='link')
-
-# # Add a collision element (for the floor's physical collisions)
-# collision = ET.SubElement(link, 'collision', name='collision')
-# collision_pose = ET.SubElement(collision, 'pose')
-# collision_pose.text = pose.text  # Collision's position same as the pose above
-
-# collision_geometry = ET.SubElement(collision, 'geometry')
-# collision_box = ET.SubElement(collision_geometry, 'box')
-
-# size = ET.SubElement(collision_box, 'size')
-# size.text = f'{length} {width} 0.01'  # 0.01 m thick floor
-
-# visual = ET.SubElement(link, 'visual', name='visual')
-# visual_pose = ET.SubElement(visual, 'pose')
-# visual_pose.text = pose.text 
-
-# visual_geometry = ET.SubElement(visual, 'geometry')
-# visual_box = ET.SubElement(visual_geometry, 'box')
-
-# visual_size = ET.SubElement(visual_box, 'size')
-# visual_size.text = size.text # Same size as the collision box
-
-# # Add material for the black color
-# visual_material = ET.SubElement(visual, 'material')
-# visual_ambient = ET.SubElement(visual_material, 'ambient')
-# visual_ambient.text = '0.0 0.0 0.0 1.0'  # Black color with full opacity
-# visual_diffuse = ET.SubElement(visual_material, 'diffuse')
-# visual_diffuse.text = '0.0 0.0 0.0 1.0'  # Black color with full opacity
-
-# Create walls:
-
-
-
-
-
-
-
-
+    create_box_sdf(i, pose, size)
 
 # Tree structure and write to file
 tree = ET.ElementTree(sdf)
