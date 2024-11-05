@@ -1,0 +1,14 @@
+material Template/Box
+ {
+    technique
+    {
+       pass
+        {
+          texture_unit
+          {
+            texture box.jpg
+            scale 1 1
+          }
+       }   
+    }
+ }
