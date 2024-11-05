@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+<robot name="mirte_master">
+
+<!-- MATERIALS -->
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <material name="green">
+    <color rgba="0 1 0 1"/>
+  </material>
+  <material name="orange">
+    <color rgba="1 0.6 0 1"/>
+  </material>
+
+<!-- BASE PARTS -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.3 0.3 0.1"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0 0 0.05"/>
+    </visual>
+  </link>
+  <link name="base_top_plate_link">
+    <visual>
+      <geometry>
+        <box size="0.3 0.3 0.04"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0 0 0.02"/>
+    </visual>
+  </link>
+  <link name="rplidar_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.02" radius="0.03"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
+    </visual>
+  </link>
+  <link name="camera_link">
+    <visual>
+      <geometry>
+        <box size="0.03 0.2 0.02"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0.015 0 0.01"/>
+    </visual>
+  </link>
+
+<!-- ARM PARTS -->
+  <link name="arm_rotating_base_link">
+    <visual>
+      <geometry>
+        <box size="0.04 0.04 0.02"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
+    </visual>
+  </link>
+  <link name="shoulder_bracket_link">
+    <visual>
+      <geometry>
+        <box size="0.025 0.06 0.05"/>
+      </geometry>
+      <material name="orange"/>
+      <origin rpy="0 0 0" xyz="0 0 0.015"/>
+    </visual>
+  </link>
+  <link name="upper_arm_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.11" radius="0.01"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0 0 0.055"/>
+    </visual>
+  </link>
+  <link name="elbow_bracket_link">
+    <visual>
+      <geometry>
+        <box size="0.025 0.06 0.04"/>
+      </geometry>
+      <material name="orange"/>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
+    </visual>
+  </link>
+  <link name="webcam_link">
+    <visual>
+      <geometry>
+        <box size="0.03 0.06 0.01"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
+  </link>
+  <link name="lower_arm_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.13" radius="0.01"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0 0 0.065"/>
+    </visual>
+  </link>
+  <link name="wrist_bracket_link">
+    <visual>
+      <geometry>
+        <box size="0.025 0.04 0.04"/>
+      </geometry>
+      <material name="orange"/>
+      <origin rpy="0 0 0" xyz="0 0 0.01"/>
+    </visual>
+  </link>
+  <link name="hand_palm_link">
+    <visual>
+      <geometry>
+        <box size="0.05 0.04 0.04"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0.02 0 0.02"/>
+    </visual>
+  </link>
+  <link name="right_finger_link">
+    <visual>
+      <geometry>
+        <box size="0.01 0.05 0.1"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0.005 -0.025 0.05"/>
+    </visual>
+  </link>
+  <link name="left_finger_link">
+    <visual>
+      <geometry>
+        <box size="0.01 0.05 0.1"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="0 0 0" xyz="0.005 0.025 0.05"/>
+    </visual>
+  </link>
+
+<!-- FIXED JOINTS FOR BASE PARTS -->
+  <joint name="top_plate_mount" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_top_plate_link"/>
+    <origin xyz="0 0 0.13"/>
+  </joint>
+  <joint name="rplidar_mount" type="fixed">
+    <parent link="base_link"/>
+    <child link="rplidar_link"/>
+    <origin rpy="0 0 3.141527" xyz="0.1 0 0.1"/>
+  </joint>
+  <joint name="rgbdcam_mount" type="fixed">
+    <parent link="base_top_plate_link"/>
+    <child link="camera_link"/>
+    <origin rpy="0 0 0" xyz="0.15 0 0"/>
+  </joint>
+
+
+  <!-- FIXED JOINTS FOR ARM PARTS -->
+  <joint name="upper_arm_mount" type="fixed">
+    <parent link="shoulder_bracket_link"/>
+    <child link="upper_arm_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.04"/>
+  </joint>
+  <joint name="lower_arm_mount" type="fixed">
+    <parent link="elbow_bracket_link"/>
+    <child link="lower_arm_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.03"/>
+  </joint>
+  <joint name="webcam_mount" type="fixed">
+    <parent link="elbow_bracket_link"/>
+    <child link="webcam_link"/>
+    <origin rpy="0.24 0 1.57" xyz="0.032 0 0.018"/>
+  </joint>
+  <joint name="hand_palm_mount" type="fixed">
+    <parent link="wrist_bracket_link"/>
+    <child link="hand_palm_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.03"/>
+  </joint>
+  <joint name="right_finger_mount" type="fixed">
+    <parent link="hand_palm_link"/>
+    <child link="right_finger_link"/>
+    <origin rpy="0 0 0" xyz="0 -0.02 0"/>
+  </joint>
+  <joint name="left_finger_mount" type="fixed">
+    <parent link="hand_palm_link"/>
+    <child link="left_finger_link"/>
+    <origin rpy="0 0 0" xyz="0 0.02 0"/>
+  </joint>
+
+  <!-- MOVING JOINTS -->
+  <joint name="shoulder" type="revolute">
+    <axis xyz="0 0 -1" />
+    <parent link="base_top_plate_link" />
+    <child link="arm_rotating_base_link" />
+    <origin rpy="0 0 3.14" xyz="0.08 0.0 0.036" />
+    <limit effort="30" velocity="10.0" lower="-1.57" upper="1.57" />
+  </joint>
+  <joint name="arm" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.01 0 0.01" />
+    <parent link="arm_rotating_base_link" />
+    <child link="shoulder_bracket_link" />
+    <axis xyz="0 1 0" />
+    <limit effort="30" velocity="10.0" lower="-1.57" upper="1.57" />
+  </joint>
+  <joint name="arm2" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0.102" />
+    <parent link="upper_arm_link" />
+    <child link="elbow_bracket_link" />
+    <axis xyz="0 1 0" />
+    <limit effort="30" velocity="10.0" lower="-1.57" upper="1.57" />
+  </joint>
+  <joint name="gripper_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0 0.12" />
+    <parent link="lower_arm_link" />
+    <child link="wrist_bracket_link" />
+    <axis xyz="0 1 0" />
+    <limit effort="30" velocity="10.0" lower="-1.57" upper="1.57" />
+  </joint>
+</robot>
