@@ -76,9 +76,8 @@ def create_rectangle(pose, size, thickness, suffix):
     x, y, z, r, p, yaw = pose  # x, y, z, roll, pitch, yaw
     width, length = size
 
-    # x, y, z = 0, 0, 0
-
-    pose_str = f'{x} {y} {z} {r} {p} {yaw}'
+    # Subtract half the thickness so that the floor sits at z=0
+    pose_str = f'{x} {y} {z-thickness/2} {r} {p} {yaw}'
 
     rect_name = f'rect_{suffix}'
     rectangle = ET.SubElement(world, 'model', name=rect_name)
