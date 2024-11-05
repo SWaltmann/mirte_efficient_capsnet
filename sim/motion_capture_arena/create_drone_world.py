@@ -112,11 +112,37 @@ def create_rectangle(pose, size, thickness, suffix):
     visual_size.text = size.text # Same size as the collision box
 
     # Add material for the black color
-    visual_material = ET.SubElement(visual, 'material')
-    visual_ambient = ET.SubElement(visual_material, 'ambient')
-    visual_ambient.text = '0.0 0.0 0.0 1.0'  # Black color with full opacity
-    visual_diffuse = ET.SubElement(visual_material, 'diffuse')
-    visual_diffuse.text = '0.0 0.0 0.0 1.0'  # Black color with full opacity
+    if suffix == 'floor':
+        # Create the material element for the texture
+        material = ET.SubElement(visual, 'material')
+
+        ambient = ET.SubElement(material, 'ambient')
+        ambient.text = "0.8 0.8 0.8 1"
+
+        diffuse = ET.SubElement(material, 'diffuse')
+        diffuse.text = "0.8 0.8 0.8 1"
+
+        specular = ET.SubElement(material, 'specular')
+        specular.text = "1 0.8 0.8 1"
+        
+        pbr = ET.SubElement(material, 'pbr')
+
+        metal = ET.SubElement(pbr, 'metal')
+
+        albedo_map = ET.SubElement(metal, 'albedo_map')
+        albedo_map.text = "floor_tile.jpg"
+
+        normal_map = ET.SubElement(metal, 'normal_map')
+        normal_map.text = "floor_tile.jpg"
+
+        scale = ET.SubElement(metal, 'scale')
+        scale.text = "32 32"
+    else:
+        visual_material = ET.SubElement(visual, 'material')
+        visual_ambient = ET.SubElement(visual_material, 'ambient')
+        visual_ambient.text = '0.0 0.0 0.0 1.0'  # Black color with full opacity
+        visual_diffuse = ET.SubElement(visual_material, 'diffuse')
+        visual_diffuse.text = '0.0 0.0 0.0 1.0'  # Black color with full opacity
 
 def create_box_sdf(suffix, pose, size):
     """
@@ -343,6 +369,7 @@ ET.SubElement(light, 'direction').text = '-0.5 0.1 -0.9'
 #                               #
 #################################
 
+# First, build the curtains:
 # Size of the motion capture arena:
 arena_length = 16  # meter
 arena_height = 8  # meter
@@ -395,7 +422,8 @@ for i in range(n_boxes):
     x_size = np.random.uniform(0.5, 2)
     y_size = np.random.uniform(0.5, 2)
     z_size = np.random.uniform(0.5, 2)
-    size = x_size, x_size, x_size  # Make the box cubes
+    size = x_size, y_size, z_size 
+    size = 0.6, 0.6, 0.6  # Create all boxes the same (guess this is the size of the real boxes)
 
     x = np.random.uniform(-(arena_width-x_size) / 2, (arena_width-x_size) / 2) 
     y = np.random.uniform(-(arena_length-x_size) / 2, (arena_length-x_size) / 2)
