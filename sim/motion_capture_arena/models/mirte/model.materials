@@ -1,0 +1,7 @@
+material orange {
+    ambient 1.0 0.647 0.0 1.0  # Ambient color (orange)
+    diffuse 1.0 0.647 0.0 1.0  # Diffuse color (orange)
+    specular 0.1 0.1 0.1 1.0   # Specular color (slight shine)
+    shininess 50.0              # Shininess factor
+    transparency 0.0            # No transparency
+}

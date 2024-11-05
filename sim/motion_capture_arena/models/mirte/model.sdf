@@ -1,0 +1,90 @@
+<?xml version='1.0'?>
+<sdf version='1.7'>
+	<model name="mirte_master">
+		<static>false</static>
+		<link name="base_link">  <!-- The base will consist of multiple visual and collision element, since a fixed joint does not exist:)-->
+			<visual name="base_visual">
+				<pose>0 0 0.05 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.3 0.3 0.1</size>
+					</box>
+					</geometry>
+				<material>
+					<ambient>0 0 0 1</ambient>
+					<diffuse>0 0 0 1</diffuse>
+					<specular>0 0 0 1</specular>
+					<emissive>0 0 0 1</emissive>
+				</material>
+			</visual>
+			<collision name="base_collision">
+				<pose>0 0 0.05 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.3 0.3 0.1</size>
+					</box>
+				</geometry>
+			</collision>
+			
+			<visual name="base_top_plate_visual">
+				<pose>0 0 0.15 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.3 0.3 0.04</size>
+					</box>
+				</geometry>
+				<material>
+					<ambient>0 0 0 1</ambient>
+					<diffuse>0 0 0 1</diffuse>
+					<specular>0 0 0 1</specular>
+					<emissive>0 0 0 1</emissive>
+				</material>
+			</visual>
+			<collision name="base_top_plate_collision">
+				<pose>0 0 0.15 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.3 0.3 0.04</size>
+					</box>
+				</geometry>
+			</collision>
+
+			<visual name="camera_visual">
+				<pose>0.165 0 0.19 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.03 0.2 0.02</size>
+					</box>
+				</geometry>
+				<material>
+					<ambient>1 0 0 1</ambient>
+					<diffuse>1 0 0 1</diffuse>
+					<specular>1 0 0 1</specular>
+					<emissive>0 0 0 1</emissive>
+				</material>
+			</visual>
+			<collision name="camera_collision">
+				<pose>0.165 0 0.19 0 0 0</pose>
+				<geometry>
+					<box>
+						<size>0.03 0.2 0.02</size>
+					</box>
+				</geometry>
+			</collision>
+
+			<inertial>
+				<mass>1</mass> <!-- Just a placeholder, not relevant for me -->
+				<ixx>1</ixx>
+				<iyy>1</iyy>
+				<izz>1</izz>
+				<ixy>0</ixy>
+				<ixz>0</ixz>
+				<iyx>0</iyx>
+				<iyz>0</iyz>
+				<izy>0</izy>
+				<izx>0</izx>
+			</inertial>
+		</link>
+
+	</model>
+</sdf>
