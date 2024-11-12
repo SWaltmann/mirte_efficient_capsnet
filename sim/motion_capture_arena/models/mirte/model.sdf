@@ -72,6 +72,29 @@
 				</geometry>
 			</collision>
 
+			<!-- The camera -->
+			<sensor name="rgbcamera1" type="camera">  <!--irl it is a depth camera, but I only care about the rgb-->
+				<always_on>1</always_on>
+				<update_rate>5</update_rate>
+				<visualize>true</visualize>
+				<topic>mirte_cam</topic>
+				<pose>0.18 0 0.19 0 0 0</pose>  <!-- translated to be at the actual camera-->
+				<camera>
+					<horizontal_fov>1.04</horizontal_fov>
+					<image>
+						<width>800</width>
+						<height>800</height>
+					</image>
+					<clip>
+						<near>0.1</near>
+						<far>100</far>
+					</clip>
+					<save enabled="False">
+						<path>/home/swaltmann/mirte_ws/src/mirte-ros-packages/mirte_efficient_capsnet/sim/images</path>
+					</save>
+				</camera>
+			</sensor>
+
 			<inertial>
 				<mass>1</mass> <!-- Just a placeholder, not relevant for me -->
 				<ixx>1</ixx>
