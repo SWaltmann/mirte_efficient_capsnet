@@ -7,6 +7,7 @@
 from subprocess import call
 from time import sleep
 import numpy as np
+from math import sin, cos
 
 class PoseMatrix:
 
@@ -17,9 +18,8 @@ class PoseMatrix:
         else:
             self.matrix = matrix
 
-
     def __mul__(self, other):
-        return PoseMatrix(self.matrix @ other.matrix)
+        return PoseMatrix(self.matrix @ other.matrix)  # By returning a new PoseMatrix I can chain operations
     
     def __str__(self):
         return f"{self.matrix}"
@@ -59,8 +59,7 @@ class PoseMatrix:
         x, y, z = pos
         self.matrix[:3, 3] = x, y, z
         return self
-
-    
+  
     def get_quat(self):
         # Compute the trace of the matrix (courtesy of chatGPT)
         R = self.matrix[:3, :3]
@@ -96,17 +95,47 @@ class PoseMatrix:
 
         return np.array([x, y, z, w])
         
+    def rot_around_z(self, theta):
+        """Add rot matrix from rotation around z axis in radians"""
+        quat = 0, 0, sin(theta/2), cos(theta/2)
+        self.from_quat(quat)
+        return self
+    
+    def get_position(self):
+        return self.matrix[:3,3]
 
 
-origin = PoseMatrix()
-move_forward = PoseMatrix().add_position((1, 0, 0))
+    
 
-print(move_forward.matrix)
+# origin = PoseMatrix()
+# move_forward = PoseMatrix().add_position((1, 0, 0))
 
-new_position = origin*move_forward*move_forward
+# print(move_forward.matrix)
 
-print(new_position)
+# new_position = origin*move_forward*move_forward
 
+# print(new_position)
+
+drive_circles = PoseMatrix().add_position((0.1, 0, 0)).rot_around_z(0.05)
+
+mirte_pose = PoseMatrix()  # creates pose matrix at origin
+
+for _ in range(150):
+    mirte_pos = mirte_pose.get_position()
+    x, y, z = mirte_pos
+    position = f"{{x: {x}, y: {y}, z: {z}}}"
+
+    mirte_quat = mirte_pose.get_quat()
+    qx, qy, qz, qw = mirte_quat
+    
+    orientation = f"{{x: {qx}, y: {qy}, z: {qz}, w: {qw}}}"
+
+    call(["ign", "service", "-s", "/world/drone_cage_world/set_pose", "--timeout", 
+      "1000", "--reqtype", "ignition.msgs.Pose", "--reptype", 
+      "ignition.msgs.Boolean", "--req", 
+      f"name: 'mirte_master' id: 45 position: {position} orientation: {orientation}"])    
+
+    mirte_pose = mirte_pose * drive_circles
 
 # # Setting
 
